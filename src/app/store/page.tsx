@@ -9,7 +9,7 @@ import {
 } from "ag-grid-community";
 import { Store } from "@/types/store";
 import { useAppSelector, useAppDispatch } from "@/redux/hooks";
-import { deleteStore, updateStoreOrder } from "@/redux/features/storeSlice";
+import { deleteStore } from "@/redux/features/storeSlice";
 
 ModuleRegistry.registerModules([ClientSideRowModelModule]);
 
