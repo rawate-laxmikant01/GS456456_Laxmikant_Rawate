@@ -2,8 +2,6 @@
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
 import { PlusCircle } from "lucide-react";
-import Sidebar from "@/components/Sidebar";
-import Navbar from "@/components/Navbar";
 
 export default function Page() {
   return (
