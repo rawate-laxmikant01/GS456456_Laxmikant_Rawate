@@ -4,14 +4,19 @@ import { AgGridReact } from "ag-grid-react";
 import {
   ClientSideRowModelModule,
   ColDef,
+  ICellRendererParams,
   ModuleRegistry,
 } from "ag-grid-community";
 import { Store } from "@/types/store";
 import { useAppSelector, useAppDispatch } from "@/redux/hooks";
 import { deleteStore, updateStoreOrder } from "@/redux/features/storeSlice";
 
-// Register the required modules
 ModuleRegistry.registerModules([ClientSideRowModelModule]);
+
+
+interface ActionsCellRendererProps extends ICellRendererParams {
+  data: Store;
+}
 
 export default function StorePage() {
   const dispatch = useAppDispatch();
@@ -25,12 +30,12 @@ export default function StorePage() {
     dispatch(deleteStore(id));
   };
 
-  const ActionsCellRenderer = (params: any) => {
+  const ActionsCellRenderer = ({ data }: ActionsCellRendererProps) => {
     return (
       <div className="flex items-center gap-2">
         <button
           className="p-1 hover:bg-gray-100 rounded-md"
-          onClick={() => handleDeleteStore(params.data.id)}
+          onClick={() => handleDeleteStore(data.id)}
         >
           <Trash2 className="h-6 w-5 hover:text-red-500" />
         </button>
@@ -41,23 +46,7 @@ export default function StorePage() {
     );
   };
 
-  const handleRowDragEnd = (event: any) => {
-    const { node, overNode } = event;
-    if (!overNode) return;
-
-    const newStores = [...stores];
-    const movedItem = newStores[node.rowIndex];
-    newStores.splice(node.rowIndex, 1);
-    newStores.splice(overNode.rowIndex, 0, movedItem);
-
-    const updatedStores = newStores.map((store, index) => ({
-      ...store,
-      seqNo: index + 1,
-    }));
-
-    dispatch(updateStoreOrder(updatedStores));
-  };
-
+ 
   const columnDefs: ColDef<Store>[] = [
     {
       headerName: "",
@@ -81,7 +70,6 @@ export default function StorePage() {
     {
       field: "label",
       headerName: "Store",
-      // flex: 1,
       width: 250,
       cellStyle: { fontWeight: 500 },
     },
@@ -121,7 +109,6 @@ export default function StorePage() {
             domLayout="normal"
             suppressCellFocus={true}
             suppressRowClickSelection={true}
-            onRowDragEnd={handleRowDragEnd}
           />
         </div>
       </div>
