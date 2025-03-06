@@ -5,3 +5,9 @@ export interface Store {
   city: string;
   state: string;
 }
+
+export interface StoreState {
+  items: Store[];
+  loading: boolean;
+  error: string | null;
+}

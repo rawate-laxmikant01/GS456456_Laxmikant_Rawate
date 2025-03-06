@@ -7,16 +7,31 @@ import {
   ModuleRegistry,
 } from "ag-grid-community";
 import { Store } from "@/types/store";
-import { stores } from "@/data/stores_data";
+import { useAppSelector, useAppDispatch } from "@/redux/hooks";
+import { deleteStore, updateStoreOrder } from "@/redux/features/storeSlice";
 
 // Register the required modules
 ModuleRegistry.registerModules([ClientSideRowModelModule]);
 
 export default function StorePage() {
+  const dispatch = useAppDispatch();
+  const {
+    items: stores,
+    loading,
+    error,
+  } = useAppSelector((state) => state.stores);
+
+  const handleDeleteStore = (id: string) => {
+    dispatch(deleteStore(id));
+  };
+
   const ActionsCellRenderer = (params: any) => {
     return (
       <div className="flex items-center gap-2">
-        <button className="p-1 hover:bg-gray-100 rounded-md">
+        <button
+          className="p-1 hover:bg-gray-100 rounded-md"
+          onClick={() => handleDeleteStore(params.data.id)}
+        >
           <Trash2 className="h-6 w-5 hover:text-red-500" />
         </button>
         <button className="p-1 hover:bg-gray-100 rounded-md flex">
@@ -24,6 +39,23 @@ export default function StorePage() {
         </button>
       </div>
     );
+  };
+
+  const handleRowDragEnd = (event: any) => {
+    const { node, overNode } = event;
+    if (!overNode) return;
+
+    const newStores = [...stores];
+    const movedItem = newStores[node.rowIndex];
+    newStores.splice(node.rowIndex, 1);
+    newStores.splice(overNode.rowIndex, 0, movedItem);
+
+    const updatedStores = newStores.map((store, index) => ({
+      ...store,
+      seqNo: index + 1,
+    }));
+
+    dispatch(updateStoreOrder(updatedStores));
   };
 
   const columnDefs: ColDef<Store>[] = [
@@ -65,12 +97,13 @@ export default function StorePage() {
     },
   ];
 
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div>Error: {error}</div>;
+
   return (
     <div className="flex flex-col h-[calc(100vh-8rem)] gap-4 m-4">
       <div className="flex-1 w-full border rounded-lg shadow-lg bg-white overflow-hidden">
-        <div
-          className="w-full h-full"
-        >
+        <div className="w-full h-full">
           <AgGridReact<Store>
             rowData={stores}
             columnDefs={columnDefs}
@@ -88,6 +121,7 @@ export default function StorePage() {
             domLayout="normal"
             suppressCellFocus={true}
             suppressRowClickSelection={true}
+            onRowDragEnd={handleRowDragEnd}
           />
         </div>
       </div>
