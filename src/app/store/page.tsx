@@ -1,5 +1,6 @@
 "use client";
-import { PlusCircle, Trash2, Grip } from "lucide-react";
+import { useState } from "react";
+import { PlusCircle, Trash2, Grip, XCircle } from "lucide-react";
 import { AgGridReact } from "ag-grid-react";
 import {
   ClientSideRowModelModule,
@@ -10,9 +11,9 @@ import {
 import { Store } from "@/types/store";
 import { useAppSelector, useAppDispatch } from "@/redux/hooks";
 import { deleteStore } from "@/redux/features/storeSlice";
+import AddStoreForm from "@/components/AddStoreForm";
 
 ModuleRegistry.registerModules([ClientSideRowModelModule]);
-
 
 interface ActionsCellRendererProps extends ICellRendererParams {
   data: Store;
@@ -25,6 +26,8 @@ export default function StorePage() {
     loading,
     error,
   } = useAppSelector((state) => state.stores);
+
+  const [showForm, setShowForm] = useState(false);
 
   const handleDeleteStore = (id: string) => {
     dispatch(deleteStore(id));
@@ -46,7 +49,6 @@ export default function StorePage() {
     );
   };
 
- 
   const columnDefs: ColDef<Store>[] = [
     {
       headerName: "",
@@ -72,16 +74,29 @@ export default function StorePage() {
       headerName: "Store",
       width: 250,
       cellStyle: { fontWeight: 500 },
+      cellRenderer: (params: any) => {
+        if (!params.value) return "";
+        return params.value.charAt(0).toUpperCase() + params.value.slice(1);
+      },
     },
+
     {
       field: "city",
       headerName: "City",
       width: 150,
+      cellRenderer: (params: any) => {
+        if (!params.value) return "";
+        return params.value.charAt(0).toUpperCase() + params.value.slice(1);
+      },
     },
     {
       field: "state",
       headerName: "State",
       width: 120,
+      cellRenderer: (params: any) => {
+        if (!params.value) return "";
+        return params.value.toUpperCase();
+      },
     },
   ];
 
@@ -112,11 +127,22 @@ export default function StorePage() {
           />
         </div>
       </div>
-      <div className="w-full flex justify-start">
-        <button className="flex items-center bg-orange-500 text-white py-2 px-4 rounded-lg shadow-lg hover:bg-orange-600 transition">
-          <PlusCircle className="mr-2" size={20} /> NEW STORE
-        </button>
-      </div>
+      {!showForm && (
+        <div className="w-full flex justify-start">
+          <button
+            onClick={() => setShowForm(!showForm)}
+            className="flex items-center bg-orange-500 text-white py-2 px-4 rounded-lg shadow-lg hover:bg-orange-600 transition"
+          >
+            <PlusCircle className="mr-2" size={20} />{" "}
+            {showForm ? "HIDE FORM" : "NEW STORE"}
+          </button>
+        </div>
+      )}
+      {showForm && (
+        <div className="border p-4 rounded-lg bg-gray-50 shadow-md">
+          <AddStoreForm setShowForm={setShowForm} />
+        </div>
+      )}
     </div>
   );
 }

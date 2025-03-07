@@ -15,6 +15,9 @@ const storeSlice = createSlice({
     setStores: (state, action: PayloadAction<Store[]>) => {
       state.items = action.payload;
     },
+    addStore: (state, action: PayloadAction<Store>) => {
+      state.items.push(action.payload);
+    },
     deleteStore: (state, action: PayloadAction<string>) => {
       state.items = state.items.filter((store) => store.id !== action.payload);
     },
@@ -32,6 +35,7 @@ const storeSlice = createSlice({
 
 export const {
   setStores,
+  addStore,
   deleteStore,
   updateStoreOrder,
   setLoading,
