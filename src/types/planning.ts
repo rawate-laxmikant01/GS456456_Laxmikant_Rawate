@@ -16,8 +16,32 @@ export interface Planning {
   };
 }
 
+export type PlanningEntry = {
+  store: string;
+  sku: string;
+  week: string;
+  salesUnits: number;
+};
+
+export type CalculationEntry = {
+  store: string;
+  sku: string;
+  week: string;
+  salesUnits: number;
+  salesDollars: number;
+  gmPercent: number;
+};
+
+export type RowData = {
+  store: string;
+  sku: string;
+} & {
+  [key: string]: string | number;
+};
+
+
 export interface PlanningState {
-  items: Planning[];
+  items: PlanningEntry[];
   loading: boolean;
   error: string | null;
 }

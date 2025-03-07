@@ -4,15 +4,60 @@ import { AgGridReact } from "ag-grid-react";
 import {
   ClientSideRowModelModule,
   ModuleRegistry,
-  ColGroupDef,
   ColDef,
+  ColGroupDef,
   ICellRendererParams,
 } from "ag-grid-community";
-import { useEffect, useState } from "react";
 import "ag-grid-community/styles/ag-grid.css";
 import "ag-grid-community/styles/ag-theme-alpine.css";
+import { useState, useEffect } from "react";
+import { calendarData } from "@/data/calendar_data";
+import { planningData } from "@/data/planning_data";
+import { calculationData } from "@/data/calculation_data";
+import { RowData } from "@/types/planning";
 
 ModuleRegistry.registerModules([ClientSideRowModelModule]);
+
+const generateColumns = (weeksWithData: Set<string>) => {
+  const monthGroups: Record<string, ColGroupDef> = {};
+
+  calendarData.forEach(({ week, month, monthLabel }) => {
+    if (!weeksWithData.has(week)) return; 
+
+    if (!monthGroups[month]) {
+      monthGroups[month] = {
+        headerName: monthLabel,
+        marryChildren: true,
+        children: [],
+      };
+    }
+
+    monthGroups[month].children.push({
+      headerName: week,
+      marryChildren: true,
+      children: [
+        { field: `salesUnits_${week}`, headerName: "Sales Units", width: 120 },
+        {
+          field: `salesDollars_${week}`,
+          headerName: "Sales Dollars",
+          width: 120,
+        },
+        {
+          field: `gmPercent_${week}`,
+          headerName: "GM %",
+          width: 100,
+          cellRenderer: (params: ICellRendererParams) => (
+            <div className={`p-1 rounded ${getColorForGM(params.value)}`}>
+              {params.value} %
+            </div>
+          ),
+        },
+      ],
+    });
+  });
+
+  return Object.values(monthGroups);
+};
 
 const getColorForGM = (value: number) => {
   if (value >= 80) return "bg-green-500 text-white";
@@ -22,87 +67,45 @@ const getColorForGM = (value: number) => {
   return "bg-red-400 text-white";
 };
 
-const PlanningTable = () => {
-  const [rowData, setRowData] = useState([]);
+const DynamicPlanningTable = () => {
+const [rowData, setRowData] = useState<RowData[]>([]);
+  const [columnDefs, setColumnDefs] = useState<(ColDef | ColGroupDef)[]>([]);
 
   useEffect(() => {
-    fetch("/api/planning-data") // Replace with actual API or data source
-      .then((res) => res.json())
-      .then((data) => setRowData(data));
-  }, []);
+    const weeksWithData = new Set(
+      [...planningData, ...calculationData].map((d) => d.week)
+    );
 
-  const columnDefs: (ColDef | ColGroupDef)[] = [
-    { field: "store", headerName: "Store", width: 200 },
-    { field: "sku", headerName: "SKU", width: 200 },
-    {
-      headerName: "Feb",
-      marryChildren: true,
-      headerClass: "header-center",
-      children: [
-        {
-          headerName: "Week 01",
-          marryChildren: true,
-          headerClass: "header-center",
-          cellStyle: {
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-          },
-          children: [
-            {
-              field: "week01.salesUnits",
-              headerName: "Sales Units",
-              width: 150,
-            },
-            {
-              field: "week01.salesDollars",
-              headerName: "Sales Dollars",
-              width: 150,
-            },
-            { field: "week01.gmDollars", headerName: "GM Dollars", width: 150 },
-            {
-              field: "week01.gmPercent",
-              headerName: "GM Percent",
-              width: 120,
-              cellRenderer: (params: ICellRendererParams) => {
-                <div className={`p-1 rounded ${getColorForGM(params.value)}`}>
-                  {params.value.toFixed(2)} %
-                </div>;
-              },
-            },
-          ],
-        },
-        {
-          headerName: "Week 02",
-          marryChildren: true,
-          headerClass: "header-center",
-          children: [
-            {
-              field: "week02.salesUnits",
-              headerName: "Sales Units",
-              width: 150,
-            },
-            {
-              field: "week02.salesDollars",
-              headerName: "Sales Dollars",
-              width: 150,
-            },
-            { field: "week02.gmDollars", headerName: "GM Dollars", width: 150 },
-            {
-              field: "week02.gmPercent",
-              headerName: "GM Percent",
-              width: 120,
-              cellRenderer: (params: ICellRendererParams) => (
-                <div className={`p-1 rounded ${getColorForGM(params.value)}`}>
-                  {params.value.toFixed(2)} %
-                </div>
-              ),
-            },
-          ],
-        },
-      ],
-    },
-  ];
+   const mergedData: RowData[] = Array.from(
+     new Set(planningData.map((d) => `${d.store}_${d.sku}`))
+   ).map((key) => {
+     const [store, sku] = key.split("_");
+     const row: RowData = { store, sku }; 
+
+     weeksWithData.forEach((week) => {
+       const plan = planningData.find(
+         (p) => p.store === store && p.sku === sku && p.week === week
+       );
+       const calc = calculationData.find(
+         (c) => c.store === store && c.sku === sku && c.week === week
+       );
+
+       row[`salesUnits_${week}`] = plan?.salesUnits ?? 0;
+       row[`salesDollars_${week}`] = calc?.salesDollars ?? 0;
+       row[`gmPercent_${week}`] = calc?.gmPercent ?? 0;
+     });
+
+     return row;
+   });
+
+
+    setRowData(mergedData);
+    setColumnDefs([
+      { field: "store", headerName: "Store", width: 150 },
+      { field: "sku", headerName: "SKU", width: 150 },
+      ...generateColumns(weeksWithData),
+    ]);
+  }, []);
 
   return (
     <div className="flex flex-col h-screen p-4">
@@ -118,10 +121,11 @@ const PlanningTable = () => {
           pagination={true}
           paginationPageSize={10}
           animateRows={true}
+          rowHeight={35}
         />
       </div>
     </div>
   );
 };
 
-export default PlanningTable;
+export default DynamicPlanningTable;
