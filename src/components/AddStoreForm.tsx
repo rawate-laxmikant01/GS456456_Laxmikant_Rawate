@@ -28,7 +28,7 @@ export default function AddStoreForm({ setShowForm }: AddStoreFormProps) {
     if (!formData.label || !formData.city || !formData.state) return;
 
     const newStore: Store = {
-      id: Date.now().toString(), 
+      id: Date.now().toString(),
       ...formData,
     };
 
@@ -41,7 +41,7 @@ export default function AddStoreForm({ setShowForm }: AddStoreFormProps) {
       state: "",
     });
 
-    setShowForm(false); 
+    setShowForm(false);
   };
 
   return (

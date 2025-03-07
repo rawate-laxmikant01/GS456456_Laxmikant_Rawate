@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import { PlusCircle, Trash2, Grip, XCircle } from "lucide-react";
+import { PlusCircle, Trash2, Grip } from "lucide-react";
 import { AgGridReact } from "ag-grid-react";
 import {
   ClientSideRowModelModule,
@@ -74,7 +74,7 @@ export default function StorePage() {
       headerName: "Store",
       width: 250,
       cellStyle: { fontWeight: 500 },
-      cellRenderer: (params: any) => {
+      cellRenderer: (params: ICellRendererParams<Store, string>) => {
         if (!params.value) return "";
         return params.value.charAt(0).toUpperCase() + params.value.slice(1);
       },
@@ -84,7 +84,7 @@ export default function StorePage() {
       field: "city",
       headerName: "City",
       width: 150,
-      cellRenderer: (params: any) => {
+      cellRenderer: (params: ICellRendererParams<Store, string>) => {
         if (!params.value) return "";
         return params.value.charAt(0).toUpperCase() + params.value.slice(1);
       },
@@ -93,7 +93,7 @@ export default function StorePage() {
       field: "state",
       headerName: "State",
       width: 120,
-      cellRenderer: (params: any) => {
+      cellRenderer: (params: ICellRendererParams<Store, string>) => {
         if (!params.value) return "";
         return params.value.toUpperCase();
       },

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { PlusCircle, XCircle } from "lucide-react";
-import { useAppDispatch, useAppSelector } from "@/redux/hooks";
+import { useAppDispatch } from "@/redux/hooks";
 import { addSku } from "@/redux/features/skuSlice";
 import { Sku } from "@/types/sku";
 
@@ -10,7 +10,6 @@ interface AddSkuFormProps {
 
 export default function AddSkuForm({ setShowForm }: AddSkuFormProps) {
   const dispatch = useAppDispatch();
-  const skus = useAppSelector((state) => state.skus.items);
 
   const [formData, setFormData] = useState<Omit<Sku, "id">>({
     label: "",
@@ -39,11 +38,10 @@ export default function AddSkuForm({ setShowForm }: AddSkuFormProps) {
     )
       return;
 
-  const newSku: Sku = {
-    id: `SK${Math.floor(10000 + Math.random() * 90000)}`,
-    ...formData,
-  };
-
+    const newSku: Sku = {
+      id: `SK${Math.floor(10000 + Math.random() * 90000)}`,
+      ...formData,
+    };
 
     dispatch(addSku(newSku));
 

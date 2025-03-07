@@ -69,7 +69,7 @@ export default function SkuPage() {
       field: "label",
       headerName: "Label",
       minWidth: 300,
-      cellRenderer: (params: any) => {
+      cellRenderer: (params: ICellRendererParams<Sku, string>) => {
         if (!params.value) return "";
         return params.value.charAt(0).toUpperCase() + params.value.slice(1);
       },
@@ -116,7 +116,7 @@ export default function SkuPage() {
           />
         </div>
       </div>
-      {!showForm &&
+      {!showForm && (
         <div className="w-full flex justify-start">
           <button
             onClick={() => setShowForm(!showForm)}
@@ -125,7 +125,7 @@ export default function SkuPage() {
             <PlusCircle className="mr-2" size={20} /> NEW SKU
           </button>
         </div>
-      }
+      )}
       {showForm && (
         <div className="border p-4 rounded-lg bg-gray-50 shadow-md">
           <AddSkuForm setShowForm={setShowForm} />
