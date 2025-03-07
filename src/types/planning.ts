@@ -30,6 +30,7 @@ export type CalculationEntry = {
   salesUnits: number;
   salesDollars: number;
   gmPercent: number;
+  
 };
 
 export type RowData = {
