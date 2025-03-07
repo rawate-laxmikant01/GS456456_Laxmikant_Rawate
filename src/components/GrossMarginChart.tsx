@@ -12,16 +12,8 @@ import {
   Legend,
   ResponsiveContainer,
 } from "recharts";
-// import {
-//   Select,
-//   SelectContent,
-//   SelectItem,
-//   SelectTrigger,
-//   SelectValue,
-// } from "@/components/ui/select";
-// import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import SelectDropdown from "./SelectDropdown";
 
-// Replace the weeklyData array with this enhanced version that includes location data
 const baseWeeklyData = [
   {
     week: "W01",
@@ -490,7 +482,7 @@ const baseWeeklyData = [
     gmDollars: 138093.51,
     salesDollars: 245570.72,
     gmPercent: 56,
-  }
+  },
 ];
 
 const generateLocationData = () => {
@@ -590,36 +582,24 @@ export default function GrossMarginChart() {
     return null;
   };
 
-  // Calculate max value for Y axis based on current data
   const maxGmDollars =
     Math.ceil(Math.max(...filteredData.map((item) => item.gmDollars)) / 50000) *
     50000;
 
   return (
     <div className="w-full">
-      {/* <div className="mb-4 w-full max-w-xs">
-        <Select value={selectedLocation} onValueChange={handleLocationChange}>
-          <SelectTrigger className="w-full border-2 border-gray-300 rounded">
-            <SelectValue placeholder="Select location" />
-          </SelectTrigger>
-          <SelectContent>
-            {locationOptions.map((option) => (
-              <SelectItem key={option.value} value={option.value}>
-                {option.label}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
-      </div> */}
+      <div className="mb-4 w-full max-w-xs">
+        <SelectDropdown
+          options={locationOptions}
+          value={selectedLocation}
+          onChange={handleLocationChange}
+        />
+      </div>
 
-      {/* <Card className="w-full">
-        <CardHeader className="bg-[#333] text-white pb-2">
-          <CardTitle className="text-center text-xl">{chartTitle}</CardTitle>
-        </CardHeader>
-        <CardContent className="p-0 bg-[#333]">
-         
-        </CardContent>
-      </Card> */}
+      <div className=" text-white pb-2">
+        <h2 className="text-center text-xl">{chartTitle}</h2>
+      </div>
+
       <div className="h-[500px] w-full">
         <ResponsiveContainer width="100%" height="100%">
           <ComposedChart

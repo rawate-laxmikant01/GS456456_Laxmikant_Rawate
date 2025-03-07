@@ -1,5 +1,4 @@
 import GrossMarginChart from "@/components/GrossMarginChart";
-import { PlusCircle } from "lucide-react";
 
 export default function ChartPage() {
   return (
