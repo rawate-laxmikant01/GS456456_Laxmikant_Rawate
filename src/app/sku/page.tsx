@@ -11,6 +11,8 @@ import {
 import { Sku } from "@/types/sku";
 import { useAppSelector, useAppDispatch } from "@/redux/hooks";
 import { deleteSku } from "@/redux/features/skuSlice";
+import { useState } from "react";
+import AddSkuForm from "@/components/AddSkuForm";
 
 ModuleRegistry.registerModules([ClientSideRowModelModule]);
 
@@ -21,6 +23,7 @@ interface ActionsCellRendererProps extends ICellRendererParams {
 export default function SkuPage() {
   const dispatch = useAppDispatch();
   const { items: skus, loading, error } = useAppSelector((state) => state.skus);
+  const [showForm, setShowForm] = useState(false);
 
   const handleDeleteSku = (id: string) => {
     dispatch(deleteSku(id));
@@ -66,17 +69,11 @@ export default function SkuPage() {
       field: "label",
       headerName: "Label",
       minWidth: 300,
+      cellRenderer: (params: any) => {
+        if (!params.value) return "";
+        return params.value.charAt(0).toUpperCase() + params.value.slice(1);
+      },
     },
-    // {
-    //   field: "class",
-    //   headerName: "Class",
-    //   width: 150,
-    // },
-    // {
-    //   field: "department",
-    //   headerName: "Department",
-    //   width: 180,
-    // },
     {
       field: "price",
       headerName: "Price",
@@ -88,7 +85,6 @@ export default function SkuPage() {
       headerName: "Cost",
       width: 20,
       valueFormatter: currencyFormatter,
-      // cellStyle: { justifyContent: "flex-end" },
     },
   ];
 
@@ -98,10 +94,7 @@ export default function SkuPage() {
   return (
     <div className="flex flex-col h-[calc(100vh-8rem)] gap-4 m-4">
       <div className="flex-1 w-full border rounded-lg shadow-lg bg-white overflow-hidden">
-        <div
-          className="w-full h-full ag-theme-alpine"
-         
-        >
+        <div className="w-full h-full ag-theme-alpine">
           <AgGridReact<Sku>
             rowData={skus}
             columnDefs={columnDefs}
@@ -112,7 +105,7 @@ export default function SkuPage() {
               minWidth: 100,
             }}
             headerHeight={48}
-            rowHeight={48}
+            rowHeight={30}
             pagination={true}
             paginationPageSize={10}
             animateRows={true}
@@ -123,11 +116,21 @@ export default function SkuPage() {
           />
         </div>
       </div>
-      <div className="w-full flex justify-start">
-        <button className="flex items-center bg-orange-500 text-white py-2 px-4 rounded-lg shadow-lg hover:bg-orange-600 transition">
-          <PlusCircle className="mr-2" size={20} /> NEW SKU
-        </button>
-      </div>
+      {!showForm &&
+        <div className="w-full flex justify-start">
+          <button
+            onClick={() => setShowForm(!showForm)}
+            className="flex items-center bg-orange-500 text-white py-2 px-4 rounded-lg shadow-lg hover:bg-orange-600 transition"
+          >
+            <PlusCircle className="mr-2" size={20} /> NEW SKU
+          </button>
+        </div>
+      }
+      {showForm && (
+        <div className="border p-4 rounded-lg bg-gray-50 shadow-md">
+          <AddSkuForm setShowForm={setShowForm} />
+        </div>
+      )}
     </div>
   );
 }

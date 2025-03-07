@@ -21,6 +21,9 @@ const skuSlice = createSlice({
     setSkus: (state, action: PayloadAction<Sku[]>) => {
       state.items = action.payload;
     },
+    addSku: (state, action: PayloadAction<Sku>) => {
+      state.items.push(action.payload);
+    },
     deleteSku: (state, action: PayloadAction<string>) => {
       state.items = state.items.filter((sku) => sku.id !== action.payload);
     },
@@ -36,7 +39,13 @@ const skuSlice = createSlice({
   },
 });
 
-export const { setSkus, deleteSku, updateSkuOrder, setLoading, setError } =
-  skuSlice.actions;
+export const {
+  setSkus,
+  addSku,
+  deleteSku,
+  updateSkuOrder,
+  setLoading,
+  setError,
+} = skuSlice.actions;
 
 export default skuSlice.reducer;

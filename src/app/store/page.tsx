@@ -117,7 +117,7 @@ export default function StorePage() {
               minWidth: 100,
             }}
             headerHeight={48}
-            rowHeight={48}
+            rowHeight={30}
             pagination={true}
             paginationPageSize={10}
             animateRows={true}
