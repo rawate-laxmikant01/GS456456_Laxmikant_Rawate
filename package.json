@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@reduxjs/toolkit": "^2.6.0",
     "ag-grid-community": "^33.1.1",
     "ag-grid-react": "^33.1.1",
     "lucide-react": "^0.477.0",
