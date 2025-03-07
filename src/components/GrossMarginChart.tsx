@@ -11,6 +11,7 @@ import {
   Tooltip,
   Legend,
   ResponsiveContainer,
+  TooltipProps,
 } from "recharts";
 import SelectDropdown from "./SelectDropdown";
 
@@ -526,15 +527,15 @@ const generateLocationData = () => {
 
 const locationData = generateLocationData();
 
-const monthlyGroups = Array.from(
-  new Set(baseWeeklyData.map((item) => item.month))
-).map((month) => {
-  const monthItem = baseWeeklyData.find((item) => item.month === month);
-  return {
-    value: month,
-    label: `${monthItem?.monthLabel} (${month.replace("M", "")})`,
-  };
-});
+// const monthlyGroups = Array.from(
+//   new Set(baseWeeklyData.map((item) => item.month))
+// ).map((month) => {
+//   const monthItem = baseWeeklyData.find((item) => item.month === month);
+//   return {
+//     value: month,
+//     label: `${monthItem?.monthLabel} (${month.replace("M", "")})`,
+//   };
+// });
 
 const locationOptions = [
   { value: "all", label: "San Francisco Bay Trends" },
@@ -566,21 +567,24 @@ export default function GrossMarginChart() {
       maximumFractionDigits: 0,
     }).format(value);
   };
-
-  const CustomTooltip = ({ active, payload, label }: any) => {
-    if (active && payload && payload.length) {
-      return (
-        <div className="bg-white border border-border p-3 rounded-md shadow-md">
-          <p className="font-semibold">{label}</p>
-          <p className="text-[#4299e1]">
-            GM Dollars: {formatCurrency(payload[0].value)}
-          </p>
-          <p className="text-[#ed8936]">GM %: {payload[1].value}%</p>
-        </div>
-      );
-    }
-    return null;
-  };
+const CustomTooltip: React.FC<TooltipProps<number, string>> = ({
+  active,
+  payload,
+  label,
+}) => {
+  if (active && payload && payload.length && payload[0].value) {
+    return (
+      <div className="bg-white border border-border p-3 rounded-md shadow-md">
+        <p className="font-semibold">{label}</p>
+        <p className="text-[#4299e1]">
+          GM Dollars: {formatCurrency(payload[0].value)}
+        </p>
+        <p className="text-[#ed8936]">GM %: {payload[1].value}%</p>
+      </div>
+    );
+  }
+  return null;
+};
 
   const maxGmDollars =
     Math.ceil(Math.max(...filteredData.map((item) => item.gmDollars)) / 50000) *
