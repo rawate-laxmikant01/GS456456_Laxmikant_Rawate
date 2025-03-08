@@ -20,6 +20,12 @@ A progressive web application built with Next.js, TypeScript, and AG-Grid for da
 - 🔄 State management with Redux
 - 📍 Client-side routing with Next.js
 
+### Potential Improvements with More Time:
+- If I had 4 additional hours, I would focus on:
+
+- Implementing Jest Testing: I am familiar with Jest and would add unit and integration tests to ensure the robustness of the application. This would help catch potential issues early and improve maintainability.
+- Adding a Logger: Implementing a logging mechanism would help in debugging and monitoring the app's performance, making it easier to track issues in production.
+
 ### Key Screens
 
 1. **Store Management**
