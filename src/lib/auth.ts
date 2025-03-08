@@ -47,7 +47,7 @@ export const authOptions: NextAuthOptions = {
     }),
   ],
   pages: {
-    signIn: "/auth/signin",
+    signIn: "/signin",
   },
   session: {
     strategy: "jwt",
@@ -71,6 +71,6 @@ export const authOptions: NextAuthOptions = {
           role: token.role,
         },
       };
-    },
+    }
   },
 };
