@@ -1,9 +1,8 @@
 "use client";
 import { Home, Package, BarChart, List } from "lucide-react";
-import { useSession } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 
 const menuItems = [
   { name: "Store", icon: Home, href: "/store" },
@@ -14,15 +13,6 @@ const menuItems = [
 
 const Sidebar = () => {
   const pathname = usePathname();
-  const { status } = useSession();
-  const router = useRouter();
-
-  const handleClick = (e: React.MouseEvent) => {
-    if (status !== "authenticated") {
-      e.preventDefault();
-      router.push("/signin");
-    }
-  };
 
   return (
     <div className="w-[180px] bg-white h-screen shadow-lg p-4 flex flex-col">
@@ -42,27 +32,14 @@ const Sidebar = () => {
             <Link
               key={name}
               href={href}
-              onClick={(e) => handleClick(e)}
               className={`flex items-center space-x-3 p-2 rounded-lg transition ${
-                isActive ? "bg-gray-200" : "hover:bg-gray-200"
-              } ${
-                status !== "authenticated"
-                  ? "opacity-50 cursor-not-allowed"
-                  : ""
+                isActive
+                  ? "bg-gray-200"
+                  : "hover:bg-gray-200"
               }`}
-              aria-disabled={status !== "authenticated"}
             >
-              <Icon
-                size={20}
-                className={status !== "authenticated" ? "text-gray-400" : ""}
-              />
-              <span
-                className={`text-lg font-medium ${
-                  status !== "authenticated" ? "text-gray-400" : ""
-                }`}
-              >
-                {name}
-              </span>
+              <Icon size={20} />
+              <span className="text-lg font-medium">{name}</span>
             </Link>
           );
         })}
