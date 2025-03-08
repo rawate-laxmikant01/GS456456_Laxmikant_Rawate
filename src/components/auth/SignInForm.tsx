@@ -107,7 +107,7 @@ export default function SignInForm() {
             <button
               type="submit"
               disabled={isLoading}
-              className="flex w-full justify-center rounded-md bg-indigo-600 px-4 py-2 text-sm font-semibold text-white hover:bg-indigo-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 disabled:bg-indigo-400"
+              className=" items-center bg-orange-500 text-white py-2 px-4 cursor-pointer rounded-lg shadow-lg w-full flex justify-center hover:bg-orange-600 transition"
             >
               {isLoading ? "Signing in..." : "Sign in"}
             </button>
