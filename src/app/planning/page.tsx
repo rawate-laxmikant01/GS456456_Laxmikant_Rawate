@@ -108,7 +108,7 @@ const [rowData, setRowData] = useState<RowData[]>([]);
   }, []);
 
   return (
-    <div className="flex flex-col h-screen p-4">
+    <div className="flex flex-col h-[calc(100vh-8rem)] p-4">
       <div className="ag-theme-alpine w-full h-full border rounded-lg shadow-lg">
         <AgGridReact
           rowData={rowData}
