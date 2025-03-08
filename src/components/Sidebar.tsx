@@ -14,10 +14,10 @@ const menuItems = [
 
 const Sidebar = () => {
   const pathname = usePathname();
-  const { data: session, status } = useSession();
+  const { status } = useSession();
   const router = useRouter();
 
-  const handleClick = (e: React.MouseEvent, href: string) => {
+  const handleClick = (e: React.MouseEvent) => {
     if (status !== "authenticated") {
       e.preventDefault();
       router.push("/signin");
@@ -42,7 +42,7 @@ const Sidebar = () => {
             <Link
               key={name}
               href={href}
-              onClick={(e) => handleClick(e, href)}
+              onClick={(e) => handleClick(e)}
               className={`flex items-center space-x-3 p-2 rounded-lg transition ${
                 isActive ? "bg-gray-200" : "hover:bg-gray-200"
               } ${
